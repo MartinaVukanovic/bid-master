@@ -1,0 +1,190 @@
+[
+  {
+    "id": 1,
+    "name": "Industrial Robot Arm",
+    "shortDescription": "High-performance industrial robot arm for manufacturing processes.",
+    "longDescription": "This industrial robot arm is designed to handle various tasks in manufacturing processes with high precision and efficiency.",
+    "startingBid": 15000,
+    "currentHighestBid": 0,
+    "startTime": "2025-02-15T08:00:00Z",
+    "endTime": "2025-02-20T17:00:00Z",
+    "bidRule": 5000,
+    "bidHistory": [],
+    "seller": "ABC Manufacturing"
+  },
+  {
+    "id": 2,
+    "name": "Precision 3D Printer",
+    "shortDescription": "High-precision 3D printer for rapid prototyping.",
+    "longDescription": "This precision 3D printer is capable of producing intricate designs with high accuracy and speed, making it ideal for rapid prototyping applications.",
+    "startingBid": 1000,
+    "currentHighestBid": 2900,
+    "startTime": "2023-02-18T10:00:00Z",
+    "endTime": "2023-02-25T18:00:00Z",
+    "bidRule": 100,
+    "bidHistory": [
+      {
+        "name": "jack",
+        "bidAmount": 2900,
+        "bidDifference": 1000
+      },
+      {
+        "name": "isabella",
+        "bidAmount": 1900,
+        "bidDifference": 100
+      },
+      {
+        "name": "frank",
+        "bidAmount": 1600,
+        "bidDifference": 100
+      },
+      {
+        "name": "emma",
+        "bidAmount": 1500,
+        "bidDifference": 100
+      },
+      {
+        "name": "dave",
+        "bidAmount": 1400,
+        "bidDifference": 100
+      },
+      {
+        "name": "charlie",
+        "bidAmount": 1300,
+        "bidDifference": 100
+      },
+      {
+        "name": "bob",
+        "bidAmount": 1200,
+        "bidDifference": 100
+      },
+      {
+        "name": "alice",
+        "bidAmount": 1100,
+        "bidDifference": 100
+      }
+    ],
+    "seller": "XYZ Industries"
+  },
+  {
+    "id": 3,
+    "name": "Autonomous Drone System",
+    "shortDescription": "Cutting-edge autonomous drone system for surveillance and mapping.",
+    "longDescription": "This autonomous drone system is equipped with advanced sensors and navigation capabilities, making it suitable for surveillance, mapping, and various other applications.",
+    "startingBid": 5000,
+    "currentHighestBid": 0,
+    "startTime": "2023-02-20T12:00:00Z",
+    "endTime": "2024-02-28T20:00:00Z",
+    "bidRule": 2500,
+    "bidHistory": [
+      {
+        "name": "alice",
+        "bidAmount": 1100,
+        "bidDifference": 100
+      }
+    ],
+    "seller": "Smith & Sons Engineering"
+  },
+  {
+    "id": 4,
+    "name": "Advanced CNC Machine",
+    "shortDescription": "State-of-the-art CNC machine for precision machining operations.",
+    "longDescription": "This advanced CNC machine offers high-speed and high-precision machining capabilities, making it suitable for a wide range of industrial applications.",
+    "startingBid": 25000,
+    "currentHighestBid": 0,
+    "startTime": "2023-02-22T09:00:00Z",
+    "endTime": "2023-03-01T16:00:00Z",
+    "bidRule": 7500,
+    "bidHistory": [],
+    "seller": "Mega Machinery Enterprises"
+  },
+  {
+    "id": 5,
+    "name": "Industrial Inspection Robot",
+    "shortDescription": "Automated inspection robot for industrial quality control.",
+    "longDescription": "This industrial inspection robot is equipped with advanced sensors and imaging systems, allowing for accurate and efficient quality control inspections in manufacturing environments.",
+    "startingBid": 12000,
+    "currentHighestBid": 0,
+    "startTime": "2024-02-25T11:00:00Z",
+    "endTime": "2024-03-03T19:00:00Z",
+    "bidRule": 3000,
+    "bidHistory": [],
+    "seller": "Precision Machining Inc."
+  },
+  {
+    "id": 6,
+    "name": "Heavy-Duty Forklift",
+    "shortDescription": "Heavy-duty forklift for material handling operations.",
+    "longDescription": "This heavy-duty forklift is designed to handle large and heavy loads with ease, making it ideal for material handling operations in warehouses and industrial facilities.",
+    "startingBid": 18000,
+    "currentHighestBid": 0,
+    "startTime": "2024-02-28T13:00:00Z",
+    "endTime": "2024-03-06T21:00:00Z",
+    "bidRule": 5000,
+    "bidHistory": [
+      {
+        "name": "marko",
+        "bidAmount": 20000,
+        "bidDifference": 2000
+      },
+      {
+        "name": "susan",
+        "bidAmount": 23000,
+        "bidDifference": 3000
+      }
+    ],
+    "seller": "Global Robotics Solutions"
+  },
+  {
+    "id": 7,
+    "name": "Industrial Conveyor System",
+    "shortDescription": "Automated conveyor system for material transportation.",
+    "longDescription": "This industrial conveyor system is designed to transport materials efficiently and safely within manufacturing facilities, improving productivity and reducing manual labor.",
+    "startingBid": 8000,
+    "currentHighestBid": 0,
+    "startTime": "2024-03-02T08:00:00Z",
+    "endTime": "2024-03-09T15:00:00Z",
+    "bidRule": 2000,
+    "bidHistory": [],
+    "seller": "Advanced Fabrication Co."
+  },
+  {
+    "id": 8,
+    "name": "Robotic Welding System",
+    "shortDescription": "Automated robotic welding system for metal fabrication.",
+    "longDescription": "This robotic welding system utilizes advanced robotics technology to perform precise and efficient welding operations, increasing productivity and ensuring high-quality welds.",
+    "startingBid": 22000,
+    "currentHighestBid": 0,
+    "startTime": "2022-03-05T10:00:00Z",
+    "endTime": "2025-03-12T18:00:00Z",
+    "bidRule": 5000,
+    "bidHistory": [],
+    "seller": "Mega Machinery Enterprises"
+  },
+  {
+    "id": 9,
+    "name": "Industrial Waterjet Cutter",
+    "shortDescription": "High-powered waterjet cutter for precision cutting operations.",
+    "longDescription": "This industrial waterjet cutter utilizes high-pressure waterjets to cut through various materials with precision and accuracy, making it ideal for metal fabrication and other industries.",
+    "startingBid": 16000,
+    "currentHighestBid": 0,
+    "startTime": "2024-03-08T12:00:00Z",
+    "endTime": "2024-03-15T20:00:00Z",
+    "bidRule": 4000,
+    "bidHistory": [],
+    "seller": "Innovative Solutions Group"
+  },
+  {
+    "id": 10,
+    "name": "Automated Packaging Machine",
+    "shortDescription": "Automated packaging machine for product packaging.",
+    "longDescription": "This automated packaging machine is capable of packaging products quickly and efficiently, reducing manual labor and increasing packaging throughput.",
+    "startingBid": 10000,
+    "currentHighestBid": 0,
+    "startTime": "2024-03-12T09:00:00Z",
+    "endTime": "2024-03-19T16:00:00Z",
+    "bidRule": 2500,
+    "bidHistory": [],
+    "seller": "Mega Machinery Enterprises"
+  }
+]
