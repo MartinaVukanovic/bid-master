@@ -11,22 +11,20 @@
       </div>
       <div style="min-width: 50vw"> 
         <v-text-field v-model="search" label="Search" variant="outlined" append-inner-icon="mdi-magnify"></v-text-field> 
-        <div v-if="filteredArtists.length === 0" style="text-align: center;">
+        <div v-if="filteredArtists()?.length === 0" style="text-align: center;">
           No auctions found.
         </div>
       </div>
   </div>
-  <div class="main-auctions-container">
+  <div class="main-auctions-container"  v-if="!isLoading">
       <transition-group name="auctions" tag="div" class="auctions-container">
       <Auction
-        v-for="(artist) in filteredArtists"
+        v-for="(artist) in filteredArtists()"
         :key="artist"
         :artist="artist"
         /> 
       </transition-group>
   </div>
-
-
 </template>
 
 <script>
@@ -36,6 +34,7 @@ import { getAuctions, getSeller } from "../services/requests";
 export default {
   data () {
     return {
+      isLoading: true,
       search: '',
       selectedFilter: 'all',
       filters: [
@@ -46,11 +45,43 @@ export default {
       ],
     }
   },
-  beforeCreate() {
-    this.artists = getAuctions();
+  created() {
+    this.fetchAuctions();
     this.seller = getSeller();
   },
-   computed: {
+  methods: {
+    async fetchAuctions() {
+      try {
+        this.artists = await getAuctions();
+        this.isLoading = false;
+      } catch (error) {
+        console.error('Error fetching auctions:', error);
+      }
+    },
+    toggleActiveFilter(clickedFilter) {
+      clickedFilter.active = !clickedFilter.active;
+
+      if (clickedFilter.name === 'all' && clickedFilter.active) {
+        this.filters.forEach(filter => {
+          if (filter !== clickedFilter) {
+            filter.active = false;
+          }
+        });
+        return;
+      }
+
+      if (clickedFilter.name === 'live' && clickedFilter.active) {
+        this.filters.find(filter => filter.name === 'past').active = false;
+        this.filters.find(filter => filter.name === 'all').active = false;
+        return;
+      }
+
+      if (clickedFilter.name === 'past' && clickedFilter.active) {
+        this.filters.find(filter => filter.name === 'live').active = false;
+        this.filters.find(filter => filter.name === 'all').active = false;
+        return;
+      }
+    },
     filteredArtists() {
       let filtered = this.artists;
 
@@ -79,32 +110,6 @@ export default {
       return filtered;
     }
   },
-  methods: {
-    toggleActiveFilter(clickedFilter) {
-      clickedFilter.active = !clickedFilter.active;
-
-      if (clickedFilter.name === 'all' && clickedFilter.active) {
-        this.filters.forEach(filter => {
-          if (filter !== clickedFilter) {
-            filter.active = false;
-          }
-        });
-        return;
-      }
-
-      if (clickedFilter.name === 'live' && clickedFilter.active) {
-        this.filters.find(filter => filter.name === 'past').active = false;
-        this.filters.find(filter => filter.name === 'all').active = false;
-        return;
-      }
-
-      if (clickedFilter.name === 'past' && clickedFilter.active) {
-        this.filters.find(filter => filter.name === 'live').active = false;
-        this.filters.find(filter => filter.name === 'all').active = false;
-        return;
-      }
-    }
-  }
 }
 </script>
 

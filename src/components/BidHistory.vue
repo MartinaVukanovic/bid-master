@@ -3,11 +3,11 @@
     <h2 class="bid-history-title">Bid History</h2>
       <div v-for="bid in bidHistory" :key="bid.userName" class="bid-history-container">
         <p style="margin-left: 20px;">
-          {{ bid.name }}
+          {{ bid.bidder }}
         </p>
         <div class="bid-amount">
           <p>
-            ${{ bid.bidAmount }}
+            ${{ bid.amount }}
           </p>
           <p class="bidDifference">
             + ${{ bid.bidDifference }}

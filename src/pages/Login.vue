@@ -1,4 +1,18 @@
 <template>
+<div :class="{ 'alert-login': this.alert }">
+  <v-alert
+    density="compact"
+    v-model="alert"
+    border="start"
+    variant="tonal"
+    closable
+    close-label="Close Alert"
+    color="error"
+    title="Unsuccessful login"
+  >
+  Unfortunately, we encountered an issue with your login attempt. Please don't hesitate to reach out to our support team for assistance, or you can try again.
+  </v-alert>
+</div>
 <div class="main-container">
 <div class="block-container">
   <img src="../assets/login-img.svg" height="70%">
@@ -10,10 +24,10 @@
       <v-row>
         <v-col cols="12" sm="8">
           <v-text-field
-            v-model="email"
-            label="Email"
+            v-model="companyName"
+            label="Company name"
             variant="outlined"
-            :rules="[rules.required, rules.email]"
+            :rules="[rules.required]"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -49,7 +63,7 @@
 </template>
 
 <script>
-import validator from 'validator';
+import { login } from "../services/requests";
 
 export default {
     data () {
@@ -57,31 +71,27 @@ export default {
         loading: false,
         show1: false,
         show2: true,
+        alert: false,
         password: '',
-        email: '',
+        companyName: '',
         rules: {
           required: value => !!value || 'This field is required.',
           min: v => v.length >= 8 || 'Min 8 characters',
-          email: v => validator.isEmail(v) || 'Invalid email address.',
-          emailMatch: () => (`The email and password you entered don't match`),
         },
       }
     },
     methods: {
-      login() {
-        // request
-        const response = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJzZWxsZXIiOiJNZWdhIE1hY2hpbmVyeSBFbnRlcnByaXNlcyIsImV4cGlyZXNBdCI6IjIwMjUtMDItMTAgMTI6MDAifQ.VnsGiRTYUl-MCG23GLYyUpO9I07NZx88_SnRBheLrV0";
-        /* {
-          "sub": "1234567890",
-          "name": "John Doe",
-          "iat": 1516239022,
-          "seller": "Mega Machinery Enterprises",
-          "expiresAt": "2025-02-10 12:00"
-        } */
+      async login() {
+        if (this.companyName && this.password) {
+          const accessToken = await login(this.companyName, this.password);
 
-        localStorage.setItem("userToken", response);
-
-        this.$router.push('/auctions');
+          if (accessToken) {
+            localStorage.setItem("userToken", accessToken);
+            this.$router.push('/auctions');
+          } else {
+            this.alert = true;
+          }
+        }
       },
     },
   }
@@ -158,6 +168,10 @@ body {
   .form-container {
     width: 100vw;
     padding: 10vw;
+  }
+
+  .alert-login {
+    margin: 12vh 30px -22vh 30px;
   }
 }
 

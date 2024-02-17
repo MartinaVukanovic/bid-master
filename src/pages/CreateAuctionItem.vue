@@ -11,8 +11,8 @@
       <v-row>
         <v-col>
           <v-text-field
+            v-model="name"
             label="Name"
-            model-value=""
             variant="outlined"
             :rules="[rules.required]"
           ></v-text-field>
@@ -21,6 +21,7 @@
       <v-row>
         <v-col>
             <v-textarea
+              v-model="shortDescription"
               counter label="Short description"
               variant="outlined"
               rows="3"
@@ -31,7 +32,8 @@
        <v-row>
         <v-col>
             <v-textarea
-              counter label="Description"
+              v-model="detailedDescription"
+              counter label="Detailed description"
               variant="outlined"
               rows="6"
               :rules="[rules.required]"
@@ -41,6 +43,7 @@
       <v-row>
         <v-col>
           <v-file-input
+            v-model="images"
             :rules="rules"
             accept="image/png, image/jpeg, image/bmp"
             append-inner-icon="mdi-camera"
@@ -54,8 +57,8 @@
             <v-row>
         <v-col>
           <v-text-field
+            v-model="startingPrice"
             label="Starting price"
-            model-value=""
             variant="outlined"
             :rules="[rules.required, rules.startingPrice]"
             type="number"
@@ -65,8 +68,8 @@
       <v-row>
         <v-col>
           <v-text-field
-            label="Min bid amount"
-            model-value=""
+            v-model="minimalBiddingStep"
+            label="Minimal bid amount"
             variant="outlined"
             :rules="[rules.minBid]"
             type="number"
@@ -80,13 +83,56 @@
         </p>
         <Calendar />
       </v-row>
-      <div class="create-button">
+      <v-alert v-model="successAlert" type="success" closable style="opacity: 88%; margin-bottom: -30px; margin-top: 30px;">
+        Auction successfully created!
+      </v-alert>
+      <div class="create-button" @click="createAuction">
         Create
       </div>
   </v-form>
 </div>
 </template>
 
+<script>
+import { createAuction } from '../services/requests'
+
+export default {
+    data () {
+      return {
+        date: new Date(),
+        name: '',
+        shortDescription: '',
+        detailedDescription: '',
+        startingPrice: '',
+        images: [],
+        minimalBiddingStep: '',
+        loading: false,
+        successAlert: false,
+        rules: {
+          required: value => !!value || 'This field is required.',
+          min: v => v.length >= 8 || 'Min 8 characters',
+          shortDescriptionMax: v => v.length <= 100 || 'Max 100 characters',
+          minBid: v => v > 0 || !v || 'Min bid amount cannot be lower then 1',
+          startingPrice: v => v > 0 || 'Starting price cannot be lower then 1'
+        },
+      }
+    },
+    methods: {
+      async createAuction() {
+        try {
+          this.successAlert = true;
+
+          const response = await createAuction(this);
+
+          console.log(response);
+        } catch (error) {
+          console.error('Error placing bid:', error);
+        }
+      }
+    }
+  }
+  
+</script>
 
 <style>
 body {
@@ -126,6 +172,7 @@ body {
 }
 
 .create-button {
+  cursor: pointer;
   align-self: center;
   color: white;
   background-color: #620E28;
@@ -133,7 +180,7 @@ body {
   text-align: center;
   padding: 8px 20px;
   border-radius: 6px;
-  margin: 50px 0px;
+  margin: 50px 0px 80px;
   font-size: large;
   font-weight: 500;
 }
@@ -179,28 +226,4 @@ body {
     width: 40vw;
   }
 }
-
 </style>
-<script>
-export default {
-    data () {
-      return {
-        date: new Date(),
-        menu: false,
-        modal: false,
-        menu2: false,
-        loading: false,
-        show1: false,
-        show2: true,
-        password: '',
-        rules: {
-          required: value => !!value || 'This field is required.',
-          min: v => v.length >= 8 || 'Min 8 characters',
-          shortDescriptionMax: v => v.length <= 100 || 'Max 100 characters',
-          minBid: v => v > 0 || !v || 'Min bid amount cannot be lower then 1',
-          startingPrice: v => v > 0 || 'Starting price cannot be lower then 1'
-        },
-      }
-    },
-  }
-</script>

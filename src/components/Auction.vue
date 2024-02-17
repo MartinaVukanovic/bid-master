@@ -4,7 +4,7 @@
     <div class="auction-name">
       <h4>{{ artist.name }}</h4>
     </div>
-    <img src="../assets/item1.jpg" wid>
+    <img :src="artist.mainImage" style="height: 200px;">
     <div class="auction-description">
       {{ artist.shortDescription }}
     </div>
@@ -26,7 +26,6 @@
     'unsold': (this.done && !this.sold)
     }">
     <span v-if="this.upcoming">{{ this.startTime }}</span>
-    
     <span v-if="this.active">bid</span>
     <span v-if="this.sold">sold</span>
     <img v-if="this.sold" src="../assets/sold.svg">
@@ -53,7 +52,7 @@ export default {
     this.activeWithoutBids = this.active && isEmpty(bidHistory);
 
     if (!(isEmpty(bidHistory))) {
-      this.currentHighestBid = bidHistory[0].bidAmount;
+      this.currentHighestBid = bidHistory[0].amount;
     }
 
     this.startTime = format(startTime, "PPP");

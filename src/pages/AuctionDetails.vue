@@ -1,20 +1,20 @@
 <template>
   <Menu />
-  <div class="auction-title-text">
-    <h1>{{ this.name }}</h1>
-    <p class="seller"> <span style="color: #5E0D26; font-size: large;"> by: </span> {{ this.seller }}</p>
+  <div class="auction-title-text" v-if="!isLoading">
+    <h1>{{ this.auction.title }}</h1>
+    <p class="seller"> <span style="color: #5E0D26; font-size: large;"> by: </span> {{ this.auction.owner.companyName }}</p>
   </div>
   <div class="main">
     <div class="auction-details-main-container">
-    <ImagesViewer />
+    <ImagesViewer :images="this.images" />
     <div class="auction-details-container">
       <AuctionTextSection v-for="(information, x) in informations" :key="x" :information="information" />
     </div>
     </div>
     <div class="auction-details-container bid-history">
       <BidHistory :bidHistory="bidHistoryData" />
-      <div :class="{ 'disabled': this.done }" >
-        <Bid :bidRule="bidRule" />
+      <div :class="{ 'disabled': this.done || this.upcoming }" >
+        <Bid :bidRule="this.minBidAmount" :auctionId="this.id" />
       </div>
     </div>
   </div>
@@ -25,63 +25,63 @@
 
 <script>
 import { isAfter } from 'date-fns';
-import { getAuction } from "../services/requests";
+import { getAuction, formatDate } from "../services/requests";
 
 export default {
   props: ['id'],
   data() {
     return {
+      isLoading: true,
       informations: [],
     }
   },
-  mounted() {
-    const auction = getAuction(this.id);
+  created() {
+    this.getAuction();
+  },
+  methods: {
+    async getAuction() {
+      try {
+        this.auction = await getAuction(this.id);
+        this.isLoading = false;
 
-    const {
-      name,
-      seller,
-      longDescription,
-      bidRule,
-      bidHistory,
-      currentHighestBid,
-      startingBid,
-      startTime,
-      endTime
-    } = auction;
+        console.log(this.auction);
+        this.images = this.auction.asset.images;
 
-    this.name = name;
-    this.seller = seller;
-    this.minBidAmount = bidRule;
-    this.currentHighestBid = currentHighestBid;
-    this.startingBid = startingBid;
+        const endTime = formatDate(this.auction.config.endTime);
+        const startTime = formatDate(this.auction.config.startTime);
 
-    this.auctionDateData = {
-      "startTime": startTime,
-      "endTime": endTime,
-    };
+        this.auctionDateData = {
+          "startTime": startTime,
+          "endTime": endTime,
+        };
 
-    this.bidHistoryData = bidHistory;
-
-    this.bidRule = bidRule;
-    this.informations.push({
-      "title": "Description",
-      "text": longDescription,
-      }, {
-      "title": "Bid Rules",
-      "text": `Bid must be at least $${this.minBidAmount}.`
-      }, {
-      "title": "Current highest bid",
-      "text": `$${this.currentHighestBid}`,
-      "importantNumber": true,
-      },
-      {
-      "title": "Starting bid",
-      "text": `$${this.startingBid}`,
-      "importantNumber": true,
+        this.done = isAfter(new Date(), endTime);
+        this.upcoming = isAfter(startTime, new Date());
+        
+        this.minBidAmount = this.auction.config.minimalBiddingStep;
+        this.bidHistoryData = this.auction.bidHistory;
+        
+        this.informations.push({
+        "title": "Description",
+        "text": this.auction.asset.detailedDescription,
+        }, {
+        "title": "Bid Rules",
+        "text": `Bid must be at least $${this.auction.config.minimalBiddingStep}.`
+        }, {
+        "title": "Current highest bid",
+        "text": `$${this.auction.currentHighestBid}`,
+        "importantNumber": true,
+        },
+        {
+        "title": "Starting bid",
+        "text": `$${this.auction.config.startingPrice}`,
+        "importantNumber": true,
     });
-
-    this.done = isAfter(new Date(), endTime);
-  }
+      } catch (error) {
+        console.error('Error fetching auctions:', error);
+      }
+    },
+  },
 }
 </script>
 

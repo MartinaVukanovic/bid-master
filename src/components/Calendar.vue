@@ -5,7 +5,6 @@
     range
     autoApply
     :min-date="minDate"
-    :enable-time-picker="false" 
   />
 </template>
 

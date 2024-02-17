@@ -1,9 +1,25 @@
 <template>
+  <div :class="{ 'alert': this.alert }">
+    <v-alert
+      v-if="this.alert"
+      density="compact"
+      v-model="alert"
+      border="start"
+      variant="tonal"
+      closable
+      close-label="Close Alert"
+      color="error"
+      title="Unsuccessful registration"
+    >
+    Unfortunately, we encountered an issue with your registration process.  Please feel free to contact our support team for further assistance or try again.
+    </v-alert>
+  </div>
 <div class="main-container">
 <div class="block-container">
   <img src="../assets/login-img.svg" height="70%">
 </div>
 <div class="form-container">
+
   <h1 class="main-text">Welcome to Bid Master!</h1>
   <p class="small-text">Register your account.</p>
   <v-form>
@@ -11,8 +27,8 @@
       <v-row>
         <v-col cols="12" sm="8">
           <v-text-field
-            label="Username"
-            model-value=""
+            v-model="companyId"
+            label="Company Registration Number"
             variant="outlined"
             :rules="[rules.required]"
           ></v-text-field>
@@ -21,10 +37,10 @@
       <v-row>
         <v-col cols="12" sm="8">
           <v-text-field
-            label="Email"
-            model-value=""
+            v-model="companyName"
+            label="Company name"
             variant="outlined"
-            :rules="[rules.required, rules.email]"
+            :rules="[rules.required]"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -59,12 +75,49 @@
 </div>
 </template>
 
+<script>
+import { register } from "../services/requests";
+
+export default {
+    data () {
+      return {
+        loading: false,
+        show1: false,
+        show2: true,
+        alert: false,
+        companyId: '',
+        companyName: '',
+        password: '',
+        rules: {
+          required: value => !!value || 'This field is required.',
+          min: v => v.length >= 8 || 'Min 8 characters',
+        },
+      }
+    },
+    methods: {
+      async register() {
+        if (this.companyId && this.companyName && this.password) {
+          const { success } = await register(this.companyId, this.companyName, new Date('2022-01-02'), this.password);
+
+          if (success) {
+            this.$router.push('/login');
+          } else {
+            this.alert = true;
+          }
+        }
+      },
+    },
+    watch: {
+      loading(val) {
+        if (!val) return
+
+        setTimeout(() => (this.loading = false), 1000)
+      },
+    },
+  }
+</script>
 
 <style>
-body {
-  font-family: 'Poppins';
-}
-
 .main-text {
   padding-left: 12px;
   font-family: "Libre Baskerville", serif;
@@ -137,39 +190,9 @@ body {
     width: 100vw;
     padding: 10vw;
   }
-}
 
-</style>
-<script>
-import validator from 'validator';
-
-export default {
-    data () {
-      return {
-        loading: false,
-        show1: false,
-        show2: true,
-        password: '',
-        rules: {
-          required: value => !!value || 'This field is required.',
-          min: v => v.length >= 8 || 'Min 8 characters',
-          email: v => validator.isEmail(v) || 'Invalid email address.',
-          emailMatch: () => (`The email and password you entered don't match`),
-        },
-      }
-    },
-    methods: {
-      register() {
-        // request
-        this.$router.push('/login');
-      },
-    },
-    watch: {
-      loading(val) {
-        if (!val) return
-
-        setTimeout(() => (this.loading = false), 1000)
-      },
-    },
+  .alert {
+    margin: 6vh 30px -16vh 30px;
   }
-</script>
+}
+</style>
