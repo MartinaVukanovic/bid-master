@@ -32,52 +32,73 @@ export default {
   props: {
     auctionDates: Object
   },
+  methods: {
+    getFormatedDate(date) { 
+      const utcDate = new Date(date);
+      const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
+
+      return localDate;
+    }
+  },
   computed: {
     isAuctionActive () {
       if (this.auctionDates) {
-        return isBefore(this.auctionDates.startTime, new Date()) && isAfter(this.auctionDates.endTime, new Date());
+        const startTime =  this.getFormatedDate(this.auctionDates.startTime);
+        const endTime =  this.getFormatedDate(this.auctionDates.endTime);
+       
+        return isBefore(startTime, new Date()) && isAfter(endTime, new Date());
       } else {
         return 'N/A';
       }
     },
     isAuctionDone () {
       if (this.auctionDates) {
-        return isBefore(this.auctionDates.startTime, new Date()) && isBefore(this.auctionDates.endTime, new Date());
+        const startTime =  this.getFormatedDate(this.auctionDates.startTime);
+        const endTime =  this.getFormatedDate(this.auctionDates.endTime);
+       
+        return isBefore(startTime, new Date()) && isBefore(endTime, new Date());
       } else {
         return 'N/A';
       }
     },
     isAuctionUpcoming () {
       if (this.auctionDates && this.auctionDates.startTime) {
-        return isAfter(this.auctionDates.startTime, new Date());
+        const startTime =  this.getFormatedDate(this.auctionDates.startTime);
+
+        return isAfter(startTime, new Date());
       } else {
         return 'N/A';
       }
     },
     startTimeTracker() {
       if (this.auctionDates && this.auctionDates.startTime) {
-        return differenceInMilliseconds(this.auctionDates.startTime, new Date());
+        const startTime =  this.getFormatedDate(this.auctionDates.startTime);
+
+        return differenceInMilliseconds(startTime, new Date());
       } else {
         return 'N/A';
       }
     },
     endTimeTracker() {
       if (this.auctionDates) {
-        return differenceInMilliseconds(this.auctionDates.endTime, new Date());
+        const endTime =  this.getFormatedDate(this.auctionDates.endTime);
+        return differenceInMilliseconds(endTime, new Date());
       } else {
         return 'N/A';
       }
     },
     startTime() {
       if (this.auctionDates && this.auctionDates.startTime) {
-        return format(this.auctionDates.startTime, 'PPP HH:mm:ss');
+      const startTime =  this.getFormatedDate(this.auctionDates.startTime);
+        return format(startTime, 'PPP HH:mm:ss');
       } else {
         return 'N/A';
       }
     },
     endTime() {
       if (this.auctionDates && this.auctionDates.endTime) {
-        return format(this.auctionDates.endTime, 'PPP HH:mm:ss');
+      const endTime =  this.getFormatedDate(this.auctionDates.endTime);
+        return format(endTime, 'PPP HH:mm:ss');
       } else {
         return 'N/A';
       }

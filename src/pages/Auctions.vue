@@ -1,5 +1,6 @@
 <template>
   <Menu />
+  <AuctionAlert/>
   <div class="title-container">
     <div class="devider"></div>
     <div class="title"> <h1>Auctions</h1></div>
@@ -84,6 +85,20 @@ export default {
     },
     filteredArtists() {
       let filtered = this.artists;
+
+      if (filtered) {
+        filtered.forEach(artist => {
+        const startTimeUTC = new Date(artist.startTime);
+        const startTimeLocal = new Date(startTimeUTC.getTime() + startTimeUTC.getTimezoneOffset() * 60000 + 
+        (- startTimeUTC.getTimezoneOffset() * 60000));
+        artist.startTime = startTimeLocal;
+
+        const endTimeUTC = new Date(artist.endTime);
+        const endTimeLocal = new Date(endTimeUTC.getTime() + endTimeUTC.getTimezoneOffset() * 60000 + ((- startTimeUTC.getTimezoneOffset() * 60000)));
+        artist.endTime = endTimeLocal;
+        });
+      }
+
 
       if (this.search.trim() !== '') {
         filtered = filtered.filter(artist =>

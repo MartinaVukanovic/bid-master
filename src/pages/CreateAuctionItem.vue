@@ -1,5 +1,21 @@
 <template>
 <Menu />
+<AuctionAlert/>
+<div style="background-color: white; position: fixed; z-index: 2;">
+  <v-alert
+  class=""
+    density="compact"
+    v-model="alert"
+    border="start"
+    variant="tonal"
+    closable
+    close-label="Close Alert"
+    color="error"
+    title="Unsuccessful auction creation."
+  >
+  Unfortunately, we encountered an issue with your auction item. Please don't hesitate to reach out to our support team for assistance, or you can try again.
+  </v-alert>
+</div>
 <div class="item-form-container">
   <h1 class="main-create-item-text">Create new item for auction!</h1>
   <p class="low-opacity item-description-text">
@@ -81,7 +97,13 @@
         <p class="low-opacity date-description">
         Choose both the starting and ending date for the auction to set the timeframe for bidding.
         </p>
-        <Calendar />
+        <VueDatePicker
+          v-model="date"
+          :auto-position="true"
+          range
+          autoApply
+          :min-date="minDate"
+        />
       </v-row>
       <v-alert v-model="successAlert" type="success" closable style="opacity: 88%; margin-bottom: -30px; margin-top: 30px;">
         Auction successfully created!
@@ -95,11 +117,13 @@
 
 <script>
 import { createAuction } from '../services/requests'
+import { ref } from 'vue';
 
 export default {
     data () {
       return {
-        date: new Date(),
+        date: ref(null),
+        minDate: new Date(),
         name: '',
         shortDescription: '',
         detailedDescription: '',
@@ -108,6 +132,7 @@ export default {
         minimalBiddingStep: '',
         loading: false,
         successAlert: false,
+        alert: false,
         rules: {
           required: value => !!value || 'This field is required.',
           min: v => v.length >= 8 || 'Min 8 characters',
@@ -118,14 +143,24 @@ export default {
       }
     },
     methods: {
+      delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      },
       async createAuction() {
         try {
-          this.successAlert = true;
-
           const response = await createAuction(this);
 
-          console.log(response);
+          if (response.success) {
+            this.alert = false;
+            this.successAlert = true;
+            await this.delay(2000);
+            this.$router.push('/auctions');
+          } else {
+            this.alert = true;
+          }
+          
         } catch (error) {
+          this.alert = true;
           console.error('Error placing bid:', error);
         }
       }
@@ -225,5 +260,12 @@ body {
   .calendar-container {
     width: 40vw;
   }
+}
+
+.v-picker-title {
+  text-transform: none !important;
+  font-size: large !important;
+  letter-spacing: 0 !important;
+  font-weight: 500 !important;
 }
 </style>

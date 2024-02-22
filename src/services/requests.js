@@ -17,6 +17,15 @@ export function formatDate(date) {
   return new Date(date[0], date[1] - 1, date[2], date[3], date[4]); //date[5] on created?
 }
 
+export function toLocal(date) {
+  const utcDate = new Date(date);
+  const localDate = new Date(
+    utcDate.getTime() - utcDate.getTimezoneOffset() * 60000
+  );
+
+  return localDate;
+}
+
 function formatAuctions(auctions) {
   return map(auctions, (item) => {
     return {
@@ -26,10 +35,10 @@ function formatAuctions(auctions) {
       longDescription: item.asset.detailedDescription,
       startingBid: item.config.startingPrice,
       currentHighestBid: item.currentHighestBid,
-      startTime: formatDate(item.config.startTime),
-      endTime: formatDate(item.config.endTime),
+      startTime: toLocal(item.config.startTime),
+      endTime: toLocal(item.config.endTime),
       bidRule: item.config.minimalBiddingStep,
-      bidHistory: item.bidHistory,
+      bidHistory: item.bidHistory.reverse(),
       seller: item.owner.companyName,
       mainImage: `data:image/png;base64,${item.asset.images[0]}`,
     };
@@ -42,9 +51,8 @@ export async function getAuctions() {
       Authorization: `Bearer ${localStorage.getItem("userToken")}`,
     },
   });
-
-  console.log(response.data);
   console.log(formatAuctions(response.data));
+
   if (!isEmpty(response.data)) return formatAuctions(response.data);
 
   return undefined;
@@ -69,7 +77,7 @@ export async function getAuction(id) {
 }
 
 export async function createAuction(payload) {
-  const { images } = payload; // Dodajte 'images' u payload
+  const { images } = payload;
 
   const data = new FormData();
 
@@ -83,60 +91,63 @@ export async function createAuction(payload) {
     config: {
       startingPrice: payload.startingPrice,
       minimalBiddingStep: payload.minimalBiddingStep,
-      startTime: new Date("2024-02-15"),
-      endTime: new Date("2025-02-15"),
+      startTime: payload.date[0],
+      endTime: payload.date[1],
     },
   };
 
   const json = JSON.stringify(auction);
-  console.log(JSON.stringify(auction));
 
   const blob = new Blob([json], {
-    type: 'application/json'
+    type: "application/json",
   });
 
-  data.append('auction', blob);
+  data.append("auction", blob);
 
   images.forEach((image) => {
     data.append("imageFile", image);
   });
 
-  for (let pair of data.entries()) {
-    console.log(pair[0], pair[1]);
-  }
-
   try {
-    const response = await axios.post(
-      `${baseServerUrl}/api/auctions`, data,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-        },
-      }
-    );
+    await axios.post(`${baseServerUrl}/api/auctions`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+      },
+    });
 
-    console.log(response);
+    return {
+      success: true,
+    };
   } catch (error) {
-    console.log(error);
-    return undefined;
+    return {
+      success: false,
+    };
   }
 }
 
 export async function bid(id, amount) {
   try {
-    const response = await axios.post(
-      `${baseServerUrl}/api/auctions/${id}/bid`,
+    await axios.post(
+      `${baseServerUrl}/api/bids/${id}`,
       {
         amount,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+        },
       }
     );
 
-    const { accessToken } = response.data;
-
-    return accessToken;
+    return {
+      success: true,
+    };
   } catch (error) {
-    return undefined;
+    return {
+      success: false,
+      message: error?.response?.data?.errors[0],
+    };
   }
 }
 

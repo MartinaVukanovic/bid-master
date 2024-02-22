@@ -42,8 +42,10 @@ export default {
     artist: Object,
   },
   beforeCreate() {
-    const { startTime, endTime, bidHistory } = this.artist;
+    const { startTime, endTime } = this.artist;
+    let bidHistory = this.artist.bidHistory;
 
+    bidHistory = bidHistory.reverse();
     this.active = isBefore(startTime, new Date()) && isBefore(new Date(), endTime);
     this.upcoming = isAfter(startTime, new Date());
     this.done = isAfter(new Date(), endTime);

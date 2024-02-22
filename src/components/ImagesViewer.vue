@@ -6,7 +6,7 @@
     <v-carousel
       v-else
       cycle
-      height="300"
+      height="350"
       hide-delimiter-background
       hide-delimiters
       show-arrows="hover"
@@ -16,7 +16,7 @@
       <v-carousel-item v-for="(image, index) in images" :key="index">
         <img
         :src="`data:image/png;base64,${image}`"
-        height="400px" width="400px"
+        height="350px" width="350px"
         />
       </v-carousel-item>
     </v-carousel>
@@ -33,7 +33,7 @@
 
   .loader {
     border: 4px solid #f3f3f3;
-    border-top: 4px solid #620E28; /* Blue */
+    border-top: 4px solid #620E28;
     border-radius: 50%;
     width: 80px;
     height: 80px;

@@ -1,5 +1,6 @@
 <template>
   <Menu />
+  <AuctionAlert/>
   <div class="auction-title-text" v-if="!isLoading">
     <h1>{{ this.auction.title }}</h1>
     <p class="seller"> <span style="color: #5E0D26; font-size: large;"> by: </span> {{ this.auction.owner.companyName }}</p>
@@ -12,7 +13,7 @@
     </div>
     </div>
     <div class="auction-details-container bid-history">
-      <BidHistory :bidHistory="bidHistoryData" />
+      <BidHistory :bidHistory="bidHistoryData" v-if="bidHistoryData"/>
       <div :class="{ 'disabled': this.done || this.upcoming }" >
         <Bid :bidRule="this.minBidAmount" :auctionId="this.id" />
       </div>
@@ -25,7 +26,7 @@
 
 <script>
 import { isAfter } from 'date-fns';
-import { getAuction, formatDate } from "../services/requests";
+import { getAuction } from "../services/requests";
 
 export default {
   props: ['id'],
@@ -44,20 +45,26 @@ export default {
         this.auction = await getAuction(this.id);
         this.isLoading = false;
 
-        console.log(this.auction);
         this.images = this.auction.asset.images;
 
-        const endTime = formatDate(this.auction.config.endTime);
-        const startTime = formatDate(this.auction.config.startTime);
+        const endTime = this.auction.config.endTime;
+        const startTime = this.auction.config.startTime;
 
         this.auctionDateData = {
           "startTime": startTime,
           "endTime": endTime,
         };
 
-        this.done = isAfter(new Date(), endTime);
-        this.upcoming = isAfter(startTime, new Date());
-        
+        const utcEndDate = new Date(endTime);
+        const localEndDate = new Date(utcEndDate.getTime() - utcEndDate.getTimezoneOffset() * 60000);
+
+        this.done = isAfter(new Date(), localEndDate);
+
+        const utcStartDate = new Date(startTime);
+        const localStartDate = new Date(utcStartDate.getTime() - utcStartDate.getTimezoneOffset() * 60000);
+
+        this.upcoming = isAfter(localStartDate, new Date());
+
         this.minBidAmount = this.auction.config.minimalBiddingStep;
         this.bidHistoryData = this.auction.bidHistory;
         

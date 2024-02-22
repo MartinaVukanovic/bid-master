@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Auction: typeof import('./src/components/Auction.vue')['default']
+    AuctionAlert: typeof import('./src/components/AuctionAlert.vue')['default']
     AuctionDates: typeof import('./src/components/AuctionDates.vue')['default']
     AuctionDetails: typeof import('./src/pages/AuctionDetails.vue')['default']
     Auctions: typeof import('./src/pages/Auctions.vue')['default']

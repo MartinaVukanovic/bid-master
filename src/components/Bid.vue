@@ -2,6 +2,9 @@
   <v-alert v-model="successAlert" type="success" closable style="opacity: 88%;">
     Bid successfully placed!
   </v-alert>
+  <v-alert v-model="errorAlert" type="error" closable style="opacity: 88%;">
+    {{ errorMessage }}.
+  </v-alert>
   <div class="bid">
     <v-text-field
       v-model="bid"
@@ -17,6 +20,8 @@
 </template>
 
 <script>
+import { bid } from '../services/requests';
+
 export default {
   props: {
     auctionId: Number,
@@ -26,6 +31,8 @@ export default {
     return {
       bid: '',
       successAlert: false,
+      errorAlert: false,
+      errorMessage: '',
       rules: {
         minBid: v => v >= (this.bidRule || 1) || !v || `Bid amount must be at least $${this.bidRule || 1}.`,
       },
@@ -36,8 +43,17 @@ export default {
       try {
         if (this.bid >= (this.bidRule || 1)) {
 
-          // req
-          this.successAlert = true;
+          const response =  await bid(this.auctionId, this.bid);
+          
+          if (response.success) {
+            this.errorAlert = false;
+            this.successAlert = true;
+          } else {
+            this.successAlert = false;
+            this.errorAlert = true;
+            this.errorMessage = response.message;
+          }
+          
         }
       } catch (error) {
         console.error('Error placing bid:', error);
@@ -72,7 +88,6 @@ export default {
     flex-direction: column;
     align-items: center;
     gap: 20px;
-    width: 80vw;
     margin-top: 20px;
 
     .bid-button {
