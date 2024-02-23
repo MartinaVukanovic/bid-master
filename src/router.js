@@ -7,6 +7,7 @@ import {
   Register,
   Auctions,
   AuctionDetails,
+  Notifications,
   CreateAuctionItem,
   NotFound,
 } from "./pages";
@@ -33,6 +34,10 @@ const routes = [
     name: "auction",
     component: AuctionDetails,
     props: true,
+  },
+  {
+    path: "/notifications",
+    component: Notifications,
   },
   {
     path: "/create-item",

@@ -1,6 +1,6 @@
 import axios from "axios";
 import VueJwtDecode from "vue-jwt-decode";
-import { isEmpty, map } from "lodash";
+import { isEmpty, map, uniqBy } from "lodash";
 import FormData from "form-data";
 
 const environment = "process.env.NODE_ENV";
@@ -11,6 +11,39 @@ export function getSeller() {
   const { sub } = VueJwtDecode.decode(userToken);
 
   return sub;
+}
+
+export async function getNotifications() {
+  try {
+    const response = await axios.get(`${baseServerUrl}/api/notifications`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+      },
+    });
+    const uniqueNotifications = uniqBy(response.data, 'message');
+
+    return uniqueNotifications.reverse();
+  } catch (error) {
+    return [];
+  }
+}
+
+export function storeNotification(message) {
+  try {
+    axios.post(
+      `${baseServerUrl}/api/notifications`,
+      {
+        message,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+        },
+      }
+    );
+  } catch (error) {
+    return [];
+  }
 }
 
 export function formatDate(date) {
@@ -51,7 +84,6 @@ export async function getAuctions() {
       Authorization: `Bearer ${localStorage.getItem("userToken")}`,
     },
   });
-  console.log(formatAuctions(response.data));
 
   if (!isEmpty(response.data)) return formatAuctions(response.data);
 

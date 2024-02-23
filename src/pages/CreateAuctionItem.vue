@@ -153,7 +153,7 @@ export default {
           if (response.success) {
             this.alert = false;
             this.successAlert = true;
-            await this.delay(2000);
+            await this.delay(4000);
             this.$router.push('/auctions');
           } else {
             this.alert = true;

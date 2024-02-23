@@ -19,7 +19,7 @@
 
 <script>
 import Pusher from 'pusher-js';
-import { getSeller } from '../services/requests'
+import { getSeller, storeNotification } from '../services/requests'
 
 export default {
   props: {
@@ -47,8 +47,10 @@ export default {
       channel.bind('auctionStarted', data => {
         if (data.creator === seller) {
           this.alert = true;
-          this.color = '#76aa00';
+          this.color = '#334075';
           this.message = `Auction for ${data.item} has just started!`;
+
+          storeNotification(this.message);
         }
       });
 
@@ -58,10 +60,13 @@ export default {
           this.alert = true;
           this.title = 'Congratulations! 🥳'
           this.message = `You have won auction for ${data.item}!`;
+          storeNotification(`${this.title} ${this.message}`);
         } else if (seller) {
           this.color = '#620E28'
           this.alert = true;
           this.message = `Auction for ${data.item} is now finished.`;
+
+          storeNotification(this.message);
         }
       });
     }

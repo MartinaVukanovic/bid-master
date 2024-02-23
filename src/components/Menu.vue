@@ -10,16 +10,25 @@
         <v-list-item link>
           <div class="menu-item-container">
             <router-link to="/">Home</router-link>
+            <img src="../assets/home.png" height="20px">
+          </div>
+        </v-list-item>
+        <v-list-item link v-if="!notificationPage">
+          <div class="menu-item-container">
+            <router-link to="/notifications">Notifications</router-link>
+            <img src="../assets/notification.png" height="20px">
           </div>
         </v-list-item>
         <v-list-item link v-if="showAuctionsLink">
           <div class="menu-item-container">
             <router-link to="/auctions">Auctions</router-link>
+            <img src="../assets/product.png" height="24px">
           </div>
         </v-list-item>
         <v-list-item link v-if="showCreateAuctionsLink">
           <div class="menu-item-container">
             <router-link to="/create-item">Create auction item</router-link>
+            <img src="../assets/add.png" height="18px">
           </div>
         </v-list-item>
         <v-list-item link>
@@ -32,6 +41,29 @@
     </v-menu>
   </div>
 </template>
+
+<script>
+export default {
+  computed: {
+    showAuctionsLink() {
+      return this.$route.path === '/create-item' || this.$route.path.includes('/auction/') || this.$route.path === '/notifications';
+    },
+    showCreateAuctionsLink() {
+      return this.$route.path === '/auctions' || this.$route.path.includes('/auction/') || this.$route.path === '/notifications';
+    },
+    notificationPage() {
+      return this.$route.path === '/notifications';
+    },
+  },
+  methods: {
+    signOut() {
+      localStorage.removeItem("userToken");
+      this.$router.push('/login');
+    },
+  },
+}
+</script>
+
 
 <style lang="scss" scoped>
   .menu-main-container {
@@ -47,7 +79,7 @@
 
   .menu-item-container {
     display: flex;
-    justify-content: center;
+    justify-content: end;
     align-items: center;
     gap: 15px;
 
@@ -68,22 +100,3 @@
   }
 }
 </style>
-
-<script>
-export default {
-  computed: {
-    showAuctionsLink() {
-      return this.$route.path === '/create-item' || this.$route.path.includes('/auction/');
-    },
-    showCreateAuctionsLink() {
-      return this.$route.path === '/auctions' || this.$route.path.includes('/auction/');
-    }
-  },
-  methods: {
-    signOut() {
-      localStorage.removeItem("userToken");
-      this.$router.push('/login');
-    },
-  },
-}
-</script>
